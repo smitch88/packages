@@ -1,8 +1,8 @@
-# cljsjs/parinfer
+# cljsjs/rangy-core
 
 [](dependency)
 ```clojure
-[cljsjs/parinfer "1.8.1-0"] ;; latest release
+[cljsjs/rangy-core "1.3.0-0"] ;; latest release
 ```
 [](/dependency)
 
@@ -13,10 +13,7 @@ you can require the packaged library like so:
 
 ```clojure
 (ns your-ns
-  (:require [cljsjs.parinfer]))
-
-(println (.-text (js/parinfer.indentMode "(foo\nbar)")))
-(println (.-text (js/parinfer.parenMode "(foo\nbar)")))
+  (:require [cljsjs.rangy-core]))
 ```
 
 
