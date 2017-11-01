@@ -1,12 +1,12 @@
 (set-env!
   :resource-paths #{"resources"}
-  :dependencies '[[cljsjs/boot-cljsjs "0.5.1"  :scope "test"]
-                  [cljsjs/react       "0.13.3-0"]
+  :dependencies '[[cljsjs/boot-cljsjs "0.8.1"  :scope "test"]
+                  [cljsjs/react       "15.3.0-0"]
                   [cljsjs/snapsvg     "0.4.1-0"]])
 
 (require '[cljsjs.boot-cljsjs.packaging :refer :all])
 
-(def +lib-version+ "1.1.6")
+(def +lib-version+ "2.1.6")
 (def +version+ (str +lib-version+ "-0"))
 
 (task-options!
@@ -18,8 +18,8 @@
        :license     {"MIT" "http://opensource.org/licenses/MIT"}})
 
 (deftask download-react-burger-menu []
-  (download :url      (str "https://github.com/negomi/react-burger-menu/archive/" +lib-version+ ".zip")
-            :checksum "a113cce4af93dc0c18034b9589b38ccc"
+  (download :url      (str "https://github.com/negomi/react-burger-menu/archive/v" +lib-version+ ".zip")
+            :checksum "18c5e0ae2a16157c63c80e449a0752fa"
             :unzip    true))
 
 (deftask package []

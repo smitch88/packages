@@ -1,12 +1,13 @@
 (set-env!
   :resource-paths #{"resources"}
-  :dependencies '[[cljsjs/boot-cljsjs        "0.5.1"  :scope "test"]
-                  [cljsjs/react              "0.13.3-0"]
+  :dependencies '[[cljsjs/boot-cljsjs        "0.8.1"  :scope "test"]
+                  [cljsjs/react              "0.14.4-0"]
+                  [cljsjs/react-dom          "0.14.4-0"]
                   [cljsjs/object-assign-shim "0.1.0-1"]])
 
 (require '[cljsjs.boot-cljsjs.packaging :refer :all])
 
-(def +lib-version+ "0.6.0")
+(def +lib-version+ "0.6.3")
 (def +version+ (str +lib-version+ "-1"))
 
 (task-options!
@@ -19,7 +20,7 @@
 
 (deftask download-fixed-data-table []
   (download :url      (format "https://github.com/facebook/fixed-data-table/archive/v%s.zip" +lib-version+)
-            :checksum "0903f335f5285f2371f43e29161ecfd9"
+            :checksum "85931e28b24230b442f9ea1ef16bf328"
             :unzip    true))
 
 (deftask package []
@@ -43,6 +44,6 @@
                  "cljsjs/production/fixed-data-table-style.min.inc.css"})
     (sift :include #{#"^cljsjs"})
     (deps-cljs :name "cljsjs.fixed-data-table"
-               :requires ["cljsjs.react" "cljsjs.object-assign-shim"])
+               :requires ["cljsjs.react", "cljsjs.react.dom", "cljsjs.object-assign-shim"])
     (pom)
     (jar)))

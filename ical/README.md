@@ -2,12 +2,12 @@
 
 [](dependency)
 ```clojure
-[cljsjs/ical "1.2.1-2"] ;; latest release
+[cljsjs/ical "1.2.1-3"] ;; latest release
 ```
 [](/dependency)
 
 This jar comes with `deps.cljs` as used by the [Foreign Libs][flibs]
-feature of the Clojurescript compiler. After adding the above
+feature of the ClojureScript compiler. After adding the above
 dependency to your project you can require the packaged library like
 so:
 

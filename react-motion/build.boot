@@ -1,7 +1,7 @@
 (set-env!
   :resource-paths #{"resources"}
-  :dependencies '[[cljsjs/boot-cljsjs "0.5.1"  :scope "test"]
-                  [cljsjs/react       "0.14.3-0"]])
+  :dependencies '[[cljsjs/boot-cljsjs "0.8.1"  :scope "test"]
+                  [cljsjs/react       "15.3.1-0"]])
 
 (require '[cljsjs.boot-cljsjs.packaging :refer :all]
          '[boot.core :as boot]
@@ -9,8 +9,9 @@
          '[clojure.java.io :as io]
          '[boot.util :refer [sh]])
 
-(def +lib-version+ "0.4.1")
-(def +version+ (str +lib-version+ "-1"))
+(def +lib-version+ "0.5.0")
+(def +version+ (str +lib-version+ "-0"))
+(def +lib-folder+ (format "react-motion-%s" +lib-version+))
 
 (task-options!
  pom  {:project     'cljsjs/react-motion
@@ -22,7 +23,7 @@
 
 (deftask download-react-motion []
   (download :url      (format "https://github.com/chenglou/react-motion/archive/v%s.zip" +lib-version+)
-            :checksum "6795EBF517CC68AB8B8144057995AE2F"
+            :checksum "75e1c454fedc2ff19bf79817d57bdc48"
             :unzip    true))
 
 (deftask build-react-motion []
@@ -34,20 +35,16 @@
                      :let [target (io/file tmp (tmpd/path f))]]
                (io/make-parents target)
                (io/copy (tmpd/file f) target))
-             (binding [boot.util/*sh-dir* (str (io/file tmp (format "react-motion-%s" +lib-version+)))]
-               ;; Missing -f flag for rm in npm build, fails if lib/ does not exist or isn't empty
-               ;; Already fixed in master, remove when updating to next release
-               ((sh "mkdir" "lib"))
-               ((sh "touch" "lib/foo"))
+             (binding [boot.util/*sh-dir* (str (io/file tmp +lib-folder+))]
                ((sh "npm" "install"))
-               ((sh "npm" "run" "prerelease")))
+               ((sh "npm" "run" "prepublish")))
              (-> fileset (boot/add-resource tmp) boot/commit!))))
 
 (deftask package []
   (comp
     (download-react-motion)
     (build-react-motion)
-    (sift :move {#".*react-motion\.js$"
+    (sift :move {#".*/build/react-motion\.js$"
                  "cljsjs/react-motion/development/react-motion.inc.js"})
     (minify :in "cljsjs/react-motion/development/react-motion.inc.js"
             :out "cljsjs/react-motion/production/react-motion.min.inc.js")

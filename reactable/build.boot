@@ -1,10 +1,11 @@
+
 (set-env!
   :resource-paths #{"resources"}
-  :dependencies '[[cljsjs/boot-cljsjs "0.5.1" :scope "test"]])
+  :dependencies '[[cljsjs/boot-cljsjs "0.8.1" :scope "test"]])
 
 (require '[cljsjs.boot-cljsjs.packaging :refer :all])
 
-(def +lib-version+ "0.12.5")
+(def +lib-version+ "0.14.1")
 
 (def +version+ (str +lib-version+ "-0"))
 
@@ -21,7 +22,7 @@
     (download
       :url (str "https://github.com/glittershark/reactable/archive/" +lib-version+ ".zip")
       :unzip true
-      :checksum "e9910eedcf5f73f0c7ed3c19ada471f3")
+      :checksum "649cd4d50cad6cb278db4416095c5423")
     (sift :move {(re-pattern (str "^reactable-" +lib-version+ "/build/reactable.js$")) "cljsjs/development/reactable.inc.js"})
     (sift :include #{#"^cljsjs"})
     (deps-cljs :name "cljsjs.reactable"

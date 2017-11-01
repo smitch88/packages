@@ -1,15 +1,14 @@
 (function () {
 
-  var React = require('react');
-  var ReactDom = require('react-dom');
-  var injectTapEventPlugin = require("react-tap-event-plugin");
   var materialUI = require('./build/index.js');
   var materialUIStyles = require('./build/styles/index.js');
+  var withWidth = require('./build/utils/withWidth.js');
+  var colorManipulator = require('./build/utils/colorManipulator.js');
 
-  window["React"] = React;
   window["MaterialUI"] = materialUI;
   window["MaterialUIStyles"] = materialUIStyles;
-  window["ReactDOM"] = ReactDom;
-
-  injectTapEventPlugin();
+  window["MaterialUIUtils"] = {
+    withWidth : withWidth,
+    colorManipulator : colorManipulator
+  };
 })();

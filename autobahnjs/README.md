@@ -3,18 +3,18 @@
 ClojureScript wrapper for [Autobahn|JS](http://autobahn.ws/js/) 
 [](dependency)
 ```clojure
-[cljsjs/autobahnjs "0.9.9-0"] ;; latest release
+[cljsjs/autobahnjs "0.12.0-0"] ;; latest release
 ```
 [](/dependency)
 
 This jar comes with `deps.cljs` as used by the [Foreign Libs][flibs] feature
-of the Clojurescript compiler. After adding the above dependency to your project
+of the ClojureScript compiler. After adding the above dependency to your project
 you can require the packaged library like so:
 
 
 ```clojure
 (ns your-ns
-  (:require [cljsjs.autobahnjs]))
+  (:require [cljsjs.autobahn]))
              
 (def ^:private ab js/autobahn)
 

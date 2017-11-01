@@ -2,15 +2,16 @@
 
 EXIT=0
 
+IFS=$'\n'
 for x in $(./changed-packages.sh); do
-    version=$(grep "def +lib-version+" $x/build.boot | grep -o "\".*\"" | head -n1 | cut -d \" -f 2)
-    version=$version$(grep "def +version+" $x/build.boot | grep -o "\".*\"" | head -n1 | cut -d \" -f 2)
+    IFS=$'\t'
+    x=($x)
 
-    echo "$x version $version is not deployed"
+    echo "${x[0]} version ${x[1]} is not deployed"
 
     (
-    cd $x
-    boot package -- push --ensure-release --gpg-sign --repo clojars
+    cd ${x[0]}
+    boot package -- push --ensure-release --gpg-sign --repo clojars --repo-map "{:url \"https://clojars.org/repo/\"}"
     )
     [[ $? != "0" ]] && EXIT=1
 done

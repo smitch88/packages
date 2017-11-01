@@ -11,13 +11,13 @@ Add the dependency to your `build.boot` or `project.clj` file:
 
 [](dependency)
 ```clojure
-[cljsjs/plottable "1.12.0-0"] ;; latest release
+[cljsjs/plottable "2.2.0-0"] ;; latest release
 ```
 [](/dependency)
 
 ### Step Two
 This jar comes with `deps.cljs` as used by the [Foreign Libs][flibs] feature
-of the Clojurescript compiler. After adding the above dependency to your project
+of the ClojureScript compiler. After adding the above dependency to your project
 you can require the packaged library like so:
 
 ```clojure
@@ -39,4 +39,5 @@ Unfortunately I haven't found a decent way to incorporate non-JS assets from CLJ
 
 **CLJSJS Package Maintainers:**
 
-- [Dhruv Bhatia](https://github.com/dhruvbhatia).
+- [Dhruv Bhatia](https://github.com/dhruvbhatia)
+- [Levi Tan Ong](https://github.com/levitanong).

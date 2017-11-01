@@ -1,10 +1,10 @@
 (set-env!
   :resource-paths #{"resources"}
-  :dependencies '[[cljsjs/boot-cljsjs "0.5.1"  :scope "test"]])
+  :dependencies '[[cljsjs/boot-cljsjs "0.8.1"  :scope "test"]])
 
 (require '[cljsjs.boot-cljsjs.packaging :refer :all])
 
-(def +lib-version+ "0.4.0")
+(def +lib-version+ "0.6.1")
 (def +version+ (str +lib-version+ "-0"))
 
 (task-options!
@@ -18,7 +18,7 @@
 (deftask package []
   (comp
     (download :url (format "https://github.com/oauth-io/oauth-js/archive/%s.zip" +lib-version+)
-              :checksum "aa8812d0a90d337fdfd8079d7d58b874"
+              :checksum "89697A499DE3E3B3C9201CE7E281DCC0"
               :unzip true)
     (sift :move {#"^oauth-js-([\d\.]*)/dist/oauth\.js"      "cljsjs/oauthio/development/oauthio.inc.js"
                  #"^oauth-js-([\d\.]*)/dist/oauth\.min\.js" "cljsjs/oauthio/production/oauthio.min.inc.js"})

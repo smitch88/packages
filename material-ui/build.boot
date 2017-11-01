@@ -1,6 +1,8 @@
 (set-env!
   :resource-paths #{"resources"}
-  :dependencies '[[cljsjs/boot-cljsjs "0.5.1" :scope "test"]])
+  :dependencies '[[cljsjs/boot-cljsjs "0.8.1"  :scope "test"]
+                  [cljsjs/react "15.6.1-1"]
+                  [cljsjs/react-dom "15.6.1-1"]])
 
 (require '[cljsjs.boot-cljsjs.packaging :refer :all]
          '[boot.core :as boot]
@@ -8,8 +10,8 @@
          '[clojure.java.io :as io]
          '[boot.util :refer [sh]])
 
-(def +lib-version+ "0.15.0-beta.2")
-(def +version+ (str +lib-version+ "-10"))
+(def +lib-version+ "0.19.2")
+(def +version+ (str +lib-version+ "-0"))
 (def +lib-folder+ (format "material-ui-%s" +lib-version+))
 
 (task-options!
@@ -23,54 +25,57 @@
 (def url (format "https://github.com/callemall/material-ui/archive/v%s.zip" +lib-version+))
 
 (deftask download-material-ui []
-         (download :url url
-                   :checksum "9de011d18fc6ea1352698cdb76c46167"
-                   :unzip true))
+  (download :url url
+            :checksum "01B1C705DAC5C188246AAB5E6375CFA6"
+            :unzip true))
 
 (def main-file-name "main.js")
 (def webpack-file-name "webpack.config.js")
 
 (defn get-file [fileset file-name]
-      (io/file
-        (:dir (first (filter #(= (:path %) file-name) (boot/user-files fileset))))
-        file-name))
+  (io/file
+    (:dir (first (filter #(= (:path %) file-name) (boot/user-files fileset))))
+    file-name))
 
 (deftask build-material-ui []
-         (let [tmp (boot/tmp-dir!)]
-              (with-pre-wrap
-                fileset
-                (doseq [f (->> fileset boot/input-files)
-                        :let [target (io/file tmp (tmpd/path f))]]
-                       (io/make-parents target)
-                       (io/copy (tmpd/file f) target))
-                (io/copy (get-file fileset main-file-name)
-                         (io/file tmp +lib-folder+ main-file-name))
-                (io/copy (get-file fileset webpack-file-name)
-                         (io/file tmp +lib-folder+ webpack-file-name))
-                (binding [boot.util/*sh-dir* (str (io/file tmp +lib-folder+))]
-                         (do ((sh "npm" "install"))
-                             ((sh "npm" "install" "webpack"))
-                             ((sh "npm" "run" "build"))
-                             ((sh "./node_modules/.bin/webpack"))
-                             ((sh "./node_modules/.bin/webpack" "--production"))
-                             ((sh "./node_modules/.bin/webpack" "--svg-icons"))
-                             ((sh "./node_modules/.bin/webpack" "--svg-icons" "--production"))
-                             ((sh "rm" "-rf" "./node_modules"))))
-                (-> fileset (boot/add-resource tmp) boot/commit!))))
+  (let [tmp (boot/tmp-dir!)]
+    (with-pre-wrap fileset
+      (doseq [f (->> fileset boot/input-files)
+              :let [target (io/file tmp (tmpd/path f))]]
+        (io/make-parents target)
+        (io/copy (tmpd/file f) target))
+      (io/copy (get-file fileset main-file-name)
+               (io/file tmp +lib-folder+ main-file-name))
+      (io/copy (get-file fileset webpack-file-name)
+               (io/file tmp +lib-folder+ webpack-file-name))
+      (binding [boot.util/*sh-dir* (str (io/file tmp +lib-folder+))]
+        (do ((sh "npm" "install"))
+            ((sh "npm" "install" "webpack"))
+            ((sh "npm" "install" "babel-cli"))
+            ((sh "npm" "run" "build:icon-index"))
+            ((sh "node" "--stack-size=1500" "./node_modules/.bin/babel"
+                 "./src" "--ignore" "*.spec.js" "--out-dir" "./build"))
+            ((sh "npm" "run" "build:copy-files"))
+            ((sh "./node_modules/.bin/webpack"))
+            ((sh "./node_modules/.bin/webpack" "--production"))
+            ((sh "./node_modules/.bin/webpack" "--svg-icons"))
+            ((sh "./node_modules/.bin/webpack" "--svg-icons" "--production"))
+            ((sh "rm" "-rf" "./node_modules"))))
+      (-> fileset (boot/add-resource tmp) boot/commit!))))
 
 (deftask package []
-         (comp
-           (download-material-ui)
-           (build-material-ui)
-           (sift :move {#".*material-ui.inc.js"
-                        "cljsjs/material-ui/development/material-ui.inc.js"
-                        #".*material-ui-svg-icons.inc.js"
-                        "cljsjs/material-ui/development/material-ui-svg-icons.inc.js"
-                        #".*material-ui.min.inc.js"
-                        "cljsjs/material-ui/production/material-ui.min.inc.js"
-                        #".*material-ui-svg-icons.min.inc.js"
-                        "cljsjs/material-ui/production/material-ui-svg-icons.min.inc.js"
-                        })
-           (sift :include #{#"^cljsjs" #"^deps.cljs"})
-           (pom)
-           (jar)))
+  (comp
+    (download-material-ui)
+    (build-material-ui)
+    (sift :move {#".*material-ui.inc.js"
+                 "cljsjs/material-ui/development/material-ui.inc.js"
+                 #".*material-ui-svg-icons.inc.js"
+                 "cljsjs/material-ui/development/material-ui-svg-icons.inc.js"
+                 #".*material-ui.min.inc.js"
+                 "cljsjs/material-ui/production/material-ui.min.inc.js"
+                 #".*material-ui-svg-icons.min.inc.js"
+                 "cljsjs/material-ui/production/material-ui-svg-icons.min.inc.js"
+                 })
+    (sift :include #{#"^cljsjs" #"^deps.cljs"})
+    (pom)
+    (jar)))

@@ -6,6 +6,10 @@ var entryName = "material-ui";
 var output = {
   filename: '[name].inc.js'
 };
+var externals = {
+    "react": "React",
+    "react-dom": "ReactDOM"
+};
 
 if (svgIcons) {
     output['libraryTarget'] = 'var';
@@ -23,6 +27,7 @@ entry[entryName] = entryPath;
 module.exports = {
   entry : entry,
   output: output,
+  externals: externals,
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
